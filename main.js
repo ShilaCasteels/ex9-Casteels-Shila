@@ -62,13 +62,13 @@ request(dronesSettings, function (error, response, dronesString) {
 			var drone = JSON.parse(droneString);
 			dal.insertDrone(new Drone(drone.id, drone.name, drone.mac_address));
 		});
-        var fileheadsettings = new Settings ("/drones/" + drone.id + "/files?format=json");
+        var fileheadsettings = new Settings ("/files?drone_id.is=" + drone.id + "&date_loaded.greaterOrEqual=2016-12-01T00:00:00&format=json");
         request (fileheadsettings, function(error, response, fileheadString){
             var FileHead = JSON.parse(fileheadString);
             console.log(FileHead);
             console.log("**************************************************************************");
             FileHead.forEach(function(FileHeads){
-                  var fileheadSettings = new Settings ("/drones/" + drone.id + "/files/"+FileHead.id+"?format=json");
+                  var fileheadSettings = new Settings ("/files/"+FileHead.id+"?format=json");
                   request(fileheadSettings, function(error, response, filehString){
                       var FileHeads = JSON.parse(filehString);
                       dal.insertFileHeads (new FileHead(FileHead.id, FileHead.droneref));
