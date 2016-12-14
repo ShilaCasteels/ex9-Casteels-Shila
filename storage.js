@@ -29,6 +29,66 @@ var dal = {
 				db.close();
 			});
 		});
+	},
+        clearFileHead: function(call){
+                this.connect(null, function(db){
+                     db.collection('FileHead').drop(function(err,result){
+                         db.close();
+                     });
+                });
+        },
+        insertFileHead: function (drone, callback) {
+		this.connect(null, function (db) {
+			db.collection('FileHead').insert(drone, function (err, result) {
+				//callback(result);
+				db.close();
+			});
+		});
+	},
+         clearFiles: function(call){
+                this.connect(null, function(db){
+                     db.collection('Files').drop(function(err,result){
+                         db.close();
+                     });
+                });
+        },
+        insertFiles: function (drone, callback) {
+		this.connect(null, function (db) {
+			db.collection('Files').insert(drone, function (err, result) {
+				//callback(result);
+				db.close();
+			});
+		});
+	},
+         clearContents: function(call){
+                this.connect(null, function(db){
+                     db.collection('Contents').drop(function(err,result){
+                         db.close();
+                     });
+                });
+        },
+        insertContents: function (drone, callback) {
+		this.connect(null, function (db) {
+			db.collection('Contents').insert(drone, function (err, result) {
+				//callback(result);
+				db.close();
+			});
+		});
+	},
+         clearContenthead: function(call){
+                this.connect(null, function(db){
+                     db.collection('Contenthead').drop(function(err,result){
+                         db.close();
+                     });
+                });
+        },
+        insertContenthead: function (drone, callback) {
+		this.connect(null, function (db) {
+			db.collection('Contenthead').insert(drone, function (err, result) {
+				//callback(result);
+				db.close();
+			});
+		});
 	}
 };
 
