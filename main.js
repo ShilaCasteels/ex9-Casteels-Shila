@@ -1,6 +1,7 @@
 // >$ npm install request --save 
 var request = require('request');
-var dalDrone = require('./storage.js');
+//Drones
+var dalDrone = require('./Dronestorage.js');
 
 // http://stackoverflow.com/questions/10888610/ignore-invalid-self-signed-ssl-certificate-in-node-js-with-https-request
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
@@ -75,7 +76,7 @@ request(dronesSettings, function (error, response, dronesString) {
                   var fileheadSettings = new Settings ();
                   request(fileheadSettings, function(error, response, filehString){
                       var filehead = JSON.parse(filehString);
-                      dalDrone.insertFileHead (new FileHead(FileHead._id, FileHead.droneref));
+                      dalDrone.insertFileHead (new FileHead(FileHead._id, filehead.droneref));
                       console.log("Fileheaders inserted");
                   });
             var filessettings = new Settings ("/files?drone_id.is="+drone.id+"/"+FileHead.id+"?format=json");
@@ -123,18 +124,4 @@ request(dronesSettings, function (error, response, dronesString) {
     });
 });
 
-var express = require('express');
-var parser = require ('body-parser');
-
-var app = express();
-app.use(parser.json());
-
-app.get("/drones",function(request, response){
-    dalDrone.listAllDrones(function(err, Drone){
-        if(err){
-            throw err;
-        }
-        response.send(Drone);
-    });
-});
 //console.log("Hello Shila!");
