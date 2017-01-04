@@ -11,7 +11,7 @@ MongoClient.connect(url, function(error, db){
     db.close();
 });
 
-var dal = {
+var dalDrone = {
 
 	connect: function (err, result) {
 		MongoClient.connect(url, function (error, db) {
@@ -36,7 +36,7 @@ var dal = {
 			});
 		});
 	},
-        clearFileHead: function(call){
+        clearFileHead: function(callback){
                 this.connect(null, function(db){
                      db.collection('FileHeaders').drop(function(err,result){
                          db.close();
@@ -46,7 +46,7 @@ var dal = {
         insertFileHead: function (filehead, callback) {
 		this.connect(null, function (db) {
 			db.collection('FileHeaders').insert(filehead, function (err, result) {
-				callback(result);
+				//callback(result);
 				db.close();
 			});
 		});
@@ -98,4 +98,31 @@ var dal = {
 	}
 };
 
-module.exports = dal;
+module.exports = dalDrone;
+
+var dalLocatie = {
+    connect: function (err, result) {
+		MongoClient.connect(url, function (error, db) {
+			if (error)
+				throw new Error(error);
+			console.log("Connected successfully to server");
+			result(db);
+		});
+	},
+    clearLocatie: function(call){
+        this.connect(null, function(db){
+            db.collection('locatie').drop(function(err, result){
+                db.close();
+            });
+        });
+    },
+    insertLocatie:function(locatie, callback){
+        this.connect(null, function(db){
+            db.collection('locatie').insert(locatie, function(err, result){
+                db.close();
+            });
+        });
+    } 
+};
+
+module.exports = dalLocatie;
