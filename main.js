@@ -24,11 +24,11 @@ var Drone = function (id, name, mac, location) {
         this.location = location;
 };
 var FileHead = function (id, ref){
-        this.id = id;
+        this._id = id;
         this.droneref = ref;
 };
 var Files = function(id,date_loaded, date_first_rec, date_last_rec, content_id ){
-        this.id = id;
+        this._id = id;
         this.date_loaded = date_loaded;
         this.date_first_rec = date_first_rec;
         this.date_last_rec;
@@ -37,10 +37,10 @@ var Files = function(id,date_loaded, date_first_rec, date_last_rec, content_id )
 var Contents = function(url, ref, id){
         this.url = url;
         this.Fileref = ref;
-        this.id = id;
+        this._id = id;
 };
 var Contenthead = function(content_id, contentmac, datetime, rssi){
-        this.id = content_id;
+        this._id = content_id;
         this.mac = contentmac;
         this.date = datetime;
         this.rssi = rssi;
@@ -63,7 +63,8 @@ request(dronesSettings, function (error, response, dronesString) {
 		var droneSettings = new Settings("/drones/"+drone.id + "?format=json");
 		request(droneSettings, function (error, response, droneString) {
 			var drone = JSON.parse(droneString);
-			dal.insertDrone(new Drone(drone.id, drone.name, drone.mac_address, drone.location));
+			dal.insertDrone(new Drone(drone._id, drone.name, drone.mac_address, drone.location));
+                        console.log("Drones inserted");
 		});
         var fileheadsettings = new Settings ("/files?drone_id.is="+drone.id+ "&date_loaded.greaterOrEqual=2016-11-01T00:00:00&format=json");
         request (fileheadsettings, function(error, response, fileheadString){
@@ -74,7 +75,8 @@ request(dronesSettings, function (error, response, dronesString) {
                   var fileheadSettings = new Settings ();
                   request(fileheadSettings, function(error, response, filehString){
                       var filehead = JSON.parse(filehString);
-                      dal.insertFileHead (new FileHead(FileHead.id, FileHead.droneref));
+                      dal.insertFileHead (new FileHead(FileHead._id, FileHead.droneref));
+                      console.log("Fileheaders inserted");
                   });
             var filessettings = new Settings ("/files?drone_id.is="+drone.id+"/"+FileHead.id+"?format=json");
             request(filessettings, function(error, response, fileString){
@@ -85,7 +87,7 @@ request(dronesSettings, function (error, response, dronesString) {
                     var fileSettings= new Settings("/files?drone_id.is="+drone.id+"/"+FileHead.id+"/contents?format=json");
                     request(fileSettings,function(error, response, fileString){
                         var file = JSON.parse(fileString);
-                        dal.insertFiles(new Files(Files.id, Files.date_loaded, Files.date_first_rec, Files.date_last_rec,
+                        dal.insertFiles(new Files(Files._id, Files.date_loaded, Files.date_first_rec, Files.date_last_rec,
                         Files.content_id));
                         });
                     var contentssettings = new Settings ("/files?drone_id.is="+drone.id+"/"+FileHead.id+"/contents?format=json");
@@ -97,7 +99,7 @@ request(dronesSettings, function (error, response, dronesString) {
                             var contentSettings = new Settings ("/files?drone_id.is="+drone.id+"/"+FileHead.id+"/contents/"+Contents.id+"?format=json");
                             request(contentSettings, function(error, response, contentString){
                                 var content = JSON.parse(contentString);
-                                dal.insertContents(new Contents(Contents.url, Contents.Fileref, Contents.id));
+                                dal.insertContents(new Contents(Contents._id, Contents.url, Contents.Fileref));
                                 });
                              var contentheadsettings = new Settings("/files?drone_id.is="+drone.id+"/"+FileHead.id+"/contents/"+Contents.id+"?format=json");
                              request(contentheadsettings, function(error, response, contentheadString){
@@ -108,7 +110,7 @@ request(dronesSettings, function (error, response, dronesString) {
                                      var contentheadSettings = new Settings ("/files?drone_id.is="+drone.id+"/"+FileHead.id+"/contents/"+Contents.id+"?format=json");
                                      request(contentheadSettings, function(error, response, contentHeadString){
                                          var contenthead = JSON.parse(contentHeadString);
-                                         dal.insertContenthead(new Contenthead(Contenthead.id, Contenthead.mac, Contenthead.date, Contenthead.rssi));
+                                         dal.insertContenthead(new Contenthead(Contenthead._id, Contenthead.mac, Contenthead.date, Contenthead.rssi));
                                         });
                                     });
                                 });
@@ -122,4 +124,4 @@ request(dronesSettings, function (error, response, dronesString) {
 });
 
 
-console.log("Hello Shila!");
+//console.log("Hello Shila!");
