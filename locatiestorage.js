@@ -28,18 +28,30 @@ var dalLocatie = {
          });
         },
 
-    listAllLocaties: function (callback) {
+    listAllLocaties: function () {
         this.connect(null, function(db){
             db.collection('locatie').list(function(err, result){
                 db.close();
                 });
             });
         },
-    updateLocatie: function (callback) {               //update = PUT
+        //met behulp van code Yannick
+      findLocaties: function(locatieCallback, id){
+          this.connect(null, function(db){
+              db.collection('locatie').find({_id:id}).toArray(function(err,doc){
+                  locatie = doc;
+                  db.close();
+                  locatieCallback(locatie);
+              });
+          });
+      },
+   
+    updateLocatie: function (id, update) {               //update = PUT
         this.connect(null, function(db){
-            db.collection('locatie').
-        };
-        };
+            db.collection('locatie').update({_id : id},
+            { $set : update});
+        });
+      }
 };
  
 module.exports = dalLocatie;
