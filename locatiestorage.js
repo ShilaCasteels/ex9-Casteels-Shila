@@ -24,22 +24,19 @@ var dalLocatie = {
         this.connect(null, function(db){
             db.collection('locatie').drop(function(err, result){
                 db.close();
-            });
-        });
-    },
+                });
+         });
+        },
 
-    listAllLocations: function (callback) {
-        Locatie.find(callback);
-    },
-    findLocation: function (stad, callback) {
-        Locatie.find({stad: stad}, callback);
-    },
-    createLocation: function (locatie, callback) {                  //Create = POST
-        Locatie.create(locatie, callback);
-    },
-    updateLocation: function (id, newloc, callback) {               //update = PUT
-        Locatie.findOneAndUpdate({locatieid: id}, newloc, callback); 
-    }
+    listAllLocaties: function (callback) {
+        this.find(callback);
+        },
+    createLocatie: function (locatie, callback) {                  //Create = POST
+        this.create(locatie, callback);
+        },
+    updateLocatie: function (id, newloc, callback) {               //update = PUT
+        this.findOneAndUpdate({id: id}, newloc, callback); 
+        }
 };
  
 module.exports = dalLocatie;
