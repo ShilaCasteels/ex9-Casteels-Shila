@@ -74,4 +74,4 @@ app.post("/locatie", function (request, response) {
         });
     });
 
-//app.post
+app.listen(3000);
