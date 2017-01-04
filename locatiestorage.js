@@ -47,10 +47,12 @@ var dalLocatie = {
               });
           });
       },
-      createLocatie: function(id, create){
+      createLocatie: function(locatieCreatie){
           this.connect(null, function(db){
               db.collection('locatie').insert(locatie, function(err, result){
+                  locatie = result;
                   db.close();
+                  locatieCreatie(locatie);
               });
           });
       },
