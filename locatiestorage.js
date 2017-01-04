@@ -1,6 +1,6 @@
 var MongoClient = require('mongodb').MongoClient;
 
-var url = 'mongodb://localhost:27017/prober';
+var url = 'mongodb://localhost:27017/locatie';
 // mongo in nodeJs: http://mongodb.github.io/node-mongodb-native/2.2/
 // mongo API : http://mongodb.github.io/node-mongodb-native/2.2/api/Collection.html
 
@@ -35,8 +35,10 @@ var dalLocatie = {
                 });
             });
         },
-    updateLocatie: function (id, newloc, callback) {               //update = PUT
-        this.findOneAndUpdate({id: id}, newloc, callback); 
+    updateLocatie: function (callback) {               //update = PUT
+        this.connect(null, function(db){
+            db.collection('locatie').({id: id}
+        }, newloc, callback); 
         }
 };
  
