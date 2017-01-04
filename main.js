@@ -1,6 +1,6 @@
 // >$ npm install request --save 
 var request = require('request');
-var dal = require('./storage.js');
+var dalDrone = require('./storage.js');
 
 // http://stackoverflow.com/questions/10888610/ignore-invalid-self-signed-ssl-certificate-in-node-js-with-https-request
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
@@ -48,11 +48,11 @@ var Contenthead = function(content_id, contentmac, datetime, rssi){
 
 var dronesSettings = new Settings("/drones/?format=json");
 
-dal.clearDrone();
-dal.clearFileHead();
-dal.clearFiles();
-dal.clearContents();
-dal.clearContenthead();
+dalDrone.clearDrone();
+dalDrone.clearFileHead();
+dalDrone.clearFiles();
+dalDrone.clearContents();
+dalDrone.clearContenthead();
 
 
 request(dronesSettings, function (error, response, dronesString) {
@@ -63,7 +63,7 @@ request(dronesSettings, function (error, response, dronesString) {
 		var droneSettings = new Settings("/drones/"+drone.id + "?format=json");
 		request(droneSettings, function (error, response, droneString) {
 			var drone = JSON.parse(droneString);
-			dal.insertDrone(new Drone(drone._id, drone.name, drone.mac_address, drone.location));
+			dalDrone.insertDrone(new Drone(drone._id, drone.name, drone.mac_address, drone.location));
                         console.log("Drones inserted");
 		});
         var fileheadsettings = new Settings ("/files?drone_id.is="+drone.id+ "&date_loaded.greaterOrEqual=2016-11-01T00:00:00&format=json");
@@ -75,7 +75,7 @@ request(dronesSettings, function (error, response, dronesString) {
                   var fileheadSettings = new Settings ();
                   request(fileheadSettings, function(error, response, filehString){
                       var filehead = JSON.parse(filehString);
-                      dal.insertFileHead (new FileHead(FileHead._id, FileHead.droneref));
+                      dalDrone.insertFileHead (new FileHead(FileHead._id, FileHead.droneref));
                       console.log("Fileheaders inserted");
                   });
             var filessettings = new Settings ("/files?drone_id.is="+drone.id+"/"+FileHead.id+"?format=json");
@@ -87,7 +87,7 @@ request(dronesSettings, function (error, response, dronesString) {
                     var fileSettings= new Settings("/files?drone_id.is="+drone.id+"/"+FileHead.id+"/contents?format=json");
                     request(fileSettings,function(error, response, fileString){
                         var file = JSON.parse(fileString);
-                        dal.insertFiles(new Files(Files._id, Files.date_loaded, Files.date_first_rec, Files.date_last_rec,
+                        dalDrone.insertFiles(new Files(Files._id, Files.date_loaded, Files.date_first_rec, Files.date_last_rec,
                         Files.content_id));
                         });
                     var contentssettings = new Settings ("/files?drone_id.is="+drone.id+"/"+FileHead.id+"/contents?format=json");
@@ -99,7 +99,7 @@ request(dronesSettings, function (error, response, dronesString) {
                             var contentSettings = new Settings ("/files?drone_id.is="+drone.id+"/"+FileHead.id+"/contents/"+Contents.id+"?format=json");
                             request(contentSettings, function(error, response, contentString){
                                 var content = JSON.parse(contentString);
-                                dal.insertContents(new Contents(Contents._id, Contents.url, Contents.Fileref));
+                                dalDrone.insertContents(new Contents(Contents._id, Contents.url, Contents.Fileref));
                                 });
                              var contentheadsettings = new Settings("/files?drone_id.is="+drone.id+"/"+FileHead.id+"/contents/"+Contents.id+"?format=json");
                              request(contentheadsettings, function(error, response, contentheadString){
@@ -110,7 +110,7 @@ request(dronesSettings, function (error, response, dronesString) {
                                      var contentheadSettings = new Settings ("/files?drone_id.is="+drone.id+"/"+FileHead.id+"/contents/"+Contents.id+"?format=json");
                                      request(contentheadSettings, function(error, response, contentHeadString){
                                          var contenthead = JSON.parse(contentHeadString);
-                                         dal.insertContenthead(new Contenthead(Contenthead._id, Contenthead.mac, Contenthead.date, Contenthead.rssi));
+                                         dalDrone.insertContenthead(new Contenthead(Contenthead._id, Contenthead.mac, Contenthead.date, Contenthead.rssi));
                                         });
                                     });
                                 });
@@ -123,5 +123,18 @@ request(dronesSettings, function (error, response, dronesString) {
     });
 });
 
+var express = require('express');
+var parser = require ('body-parser');
 
+var app = express();
+app.use(parser.json());
+
+app.get("/drones",function(request, response){
+    dalDrone.listAllDrones(function(err, Drone){
+        if(err){
+            throw err;
+        }
+        response.send(Drone);
+    });
+});
 //console.log("Hello Shila!");
