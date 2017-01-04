@@ -4,6 +4,13 @@ var url = 'mongodb://localhost:27017/prober';
 // mongo in nodeJs: http://mongodb.github.io/node-mongodb-native/2.2/
 // mongo API : http://mongodb.github.io/node-mongodb-native/2.2/api/Collection.html
 
+MongoClient.connect(url, function(error, db){
+    if (error)
+        throw new Error(error);
+    console.log("Connected succesfully to server");
+    db.close();
+});
+
 var dal = {
 
 	connect: function (err, result) {
@@ -14,18 +21,17 @@ var dal = {
 			result(db);
 		});
 	},
-	clearDrone: function (call) {
+	clearDrone: function (callback) {
 		this.connect(null, function (db) {
 			db.collection('drones').drop(function (err, result) {
 				//callback(result);
 				db.close();
 			});
-		})
+		});
 	},
 	insertDrone: function (drone, callback) {
 		this.connect(null, function (db) {
 			db.collection('drones').insert(drone, function (err, result) {
-				//callback(result);
 				db.close();
 			});
 		});
@@ -37,9 +43,9 @@ var dal = {
                      });
                 });
         },
-        insertFileHead: function (drone, callback) {
+        insertFileHead: function (filehead, callback) {
 		this.connect(null, function (db) {
-			db.collection('FileHead').insert(drone, function (err, result) {
+			db.collection('FileHead').insert(filehead, function (err, result) {
 				//callback(result);
 				db.close();
 			});
@@ -52,9 +58,9 @@ var dal = {
                      });
                 });
         },
-        insertFiles: function (drone, callback) {
+        insertFiles: function (file, callback) {
 		this.connect(null, function (db) {
-			db.collection('Files').insert(drone, function (err, result) {
+			db.collection('Files').insert(file, function (err, result) {
 				//callback(result);
 				db.close();
 			});
@@ -67,9 +73,9 @@ var dal = {
                      });
                 });
         },
-        insertContents: function (drone, callback) {
+        insertContents: function (content, callback) {
 		this.connect(null, function (db) {
-			db.collection('Contents').insert(drone, function (err, result) {
+			db.collection('Contents').insert(content, function (err, result) {
 				//callback(result);
 				db.close();
 			});
@@ -82,9 +88,9 @@ var dal = {
                      });
                 });
         },
-        insertContenthead: function (drone, callback) {
+        insertContenthead: function (contenthead, callback) {
 		this.connect(null, function (db) {
-			db.collection('Contenthead').insert(drone, function (err, result) {
+			db.collection('Contenthead').insert(contenthead, function (err, result) {
 				//callback(result);
 				db.close();
 			});
