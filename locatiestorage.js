@@ -29,10 +29,11 @@ var dalLocatie = {
         },
 
     listAllLocaties: function (callback) {
-        this.find(callback);
-        },
-    createLocatie: function (locatie, callback) {                  //Create = POST
-        this.create(locatie, callback);
+        this.connect(null, function(db){
+            db.collection('locatie').list(function(err, result){
+                db.close();
+                });
+            });
         },
     updateLocatie: function (id, newloc, callback) {               //update = PUT
         this.findOneAndUpdate({id: id}, newloc, callback); 
