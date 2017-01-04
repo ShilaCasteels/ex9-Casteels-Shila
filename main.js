@@ -123,5 +123,157 @@ request(dronesSettings, function (error, response, dronesString) {
         });
     });
 });
+var express = require('express');
+var parser = require ('body-parser');
 
+var app = express();
+app.use(parser.json());
+var dalLocatie = require('./locatiestorage.js');
+var validate = require('./Validation.js');
+
+//Locatie: op basis van code peter en wibren
+var Locatie_M = function(id, migratie, pauze_id, pauze_tijd, bezetting, bezet, klas, aantal_studenten_klas, 
+aantal_geregistreerde_studenten){
+    this.id = id;
+    this.migratie = migratie;
+    this.pauze_id = pauze_id;
+    this.pauze_tijd = pauze_tijd;
+    this.bezetting = bezetting;
+    this.bezet = bezet;
+    this.klas = klas;
+    this.aantal_studenten_klas = aantal_studenten_klas;
+    this.aantal_geregistreerde_studenten = aantal_geregistreerde_studenten;
+};
+
+app.get("/locatie",function(request, response){
+    dalLocatie.listAllLocaties(function(err, locatie){
+        if(err){
+            throw err;
+        }
+        response.send(locatie);
+    });
+});
+
+app.post("/locatie", function (request, response) {
+    var Locatie = new Locatie_M(
+            request.body.id, 
+            request.body.migratie,
+            request.body.pauze_id,
+            request.body.pauze_tijd,
+            request.body.bezetting,
+            request.body.bezet,
+            request.body.klas,
+            request.body.aantal_studenten_klas,
+            request.body.aantal_geregistreerde_studenten
+    );
+    
+    dalLocatie.createLocatie(Locatie, function(err, locatie){
+        var errors = validate.fieldsNotEmpty(
+                "id", 
+                "pauze_id",
+                "pauze_tijd",
+                "klas", 
+                 "bezet"
+                );
+             if(errors){
+                 response.status(400).send({msg: "Volgende velden ontbreken: "+errors.concat()});
+                 return;
+             }
+             response.send(locatie);
+             
+            console.log("locatie toegevoegd");
+        });
+    });
+app.put("/locatie/:id", function (request, response) {
+    var Locatie = new Locatie_M(
+            request.body.id, 
+            request.body.migratie,
+            request.body.pauze_id,
+            request.body.pauze_tijd,
+            request.body.bezetting,
+            request.body.bezet,
+            request.body.klas,
+            request.body.aantal_studenten_klas,
+            request.body.aantal_geregistreerde_studenten
+        );
+    var error = validate.fieldsNotEmpty(
+             "id", 
+             "pauze_id",
+             "pauze_tijd",
+             "klas", 
+             "bezet"
+            );
+    if (error) {
+        response.status(400).send({msg: "Volgende velden ontbreken of zijn verkeerd ingevuld:" + error.concat()});
+        return;
+    }
+    dalLocatie.updateLocatie(request.params.id, Locatie, function (err, locatie) {
+        if (err) {
+            console.log(err);
+        }
+        response.send(locatie);
+    });
+    console.log("Locatie updated");
+});
+
+var dalPauze = require('./pauzestorage.js');
+
+//Locatie: op basis van code peter en wibren
+var Pauze_M = function(pauze_id, pauze_tijd){
+    this.pauze_id = pauze_id;
+    this.pauze_tijd = pauze_tijd;
+};
+
+app.get("/pauze",function(request, response){
+    dalPauze.listAllPauze(function(err, locatie){
+        if(err){
+            throw err;
+        }
+        response.send(locatie);
+    });
+});
+
+app.post("/pauze", function (request, response) {
+    var Pauze = new Pauze_M(
+            request.body.pauze_id,
+            request.body.pauze_tijd
+    );
+    
+    dalPauze.createPauze(Pauze, function(err, locatie){
+        var errors = validate.fieldsNotEmpty(
+                "pauze_id",
+                "pauze_tijd"
+                );
+             if(errors){
+                 response.status(400).send({msg: "Volgende velden ontbreken: "+errors.concat()});
+                 return;
+             }
+             response.send(locatie);
+             
+            console.log("pauze toegevoegd");
+        });
+    });
+app.put("/pauze/:id", function (request, response) {
+    var Pauze = new Pauze_M(
+            request.body.pauze_id,
+            request.body.pauze_tijd
+        );
+    var error = validate.fieldsNotEmpty(
+             "pauze_id",
+             "pauze_tijd"
+            );
+    if (error) {
+        response.status(400).send({msg: "Volgende velden ontbreken of zijn verkeerd ingevuld:" + error.concat()});
+        return;
+    }
+    dalPauze.updateLocatie(request.params.id, Pauze, function (err, locatie) {
+        if (err) {
+            console.log(err);
+        }
+        response.send(locatie);
+    });
+    console.log("Pauze updated");
+});
+
+app.listen(8765);
 //console.log("Hello Shila!");
