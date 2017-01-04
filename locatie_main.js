@@ -74,5 +74,36 @@ app.post("/locatie", function (request, response) {
             console.log("locatie toegevoegd");
         });
     });
+app.put("/locatie/:id", function (request, response) {
+    var Locatie = new Locatie_M(
+            request.body.id, 
+            request.body.migratie,
+            request.body.pauze_id,
+            request.body.pauze_tijd,
+            request.body.bezetting,
+            request.body.bezet,
+            request.body.klas,
+            request.body.aantal_studenten_klas,
+            request.body.aantal_geregistreerde_studenten
+        );
+    var error = validate.fieldsNotEmpty(
+             "id", 
+             "pauze_id",
+             "pauze_tijd",
+             "klas", 
+             "bezet"
+            );
+    if (error) {
+        response.status(400).send({msg: "Volgende velden ontbreken of zijn verkeerd ingevuld:" + error.concat()});
+        return;
+    }
+    dalLocatie.updateLocatie(request.params.id, Locatie, function (err, locatie) {
+        if (err) {
+            console.log(err);
+        }
+        response.send(locatie);
+    });
+    console.log("Locatie updated");
+});
 
-app.listen(3000);
+app.listen(8765);
