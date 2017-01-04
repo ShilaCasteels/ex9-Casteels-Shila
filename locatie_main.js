@@ -43,6 +43,7 @@ app.get("/locatie",function(request, response){
         response.send(locatie);
     });
 });
+
 app.post("/locatie", function (request, response) {
     var Locatie = new Locatie_M(
             request.body.id, 
