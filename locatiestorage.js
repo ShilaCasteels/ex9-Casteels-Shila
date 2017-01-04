@@ -28,10 +28,12 @@ var dalLocatie = {
          });
         },
 
-    listAllLocaties: function () {
+    listAllLocaties: function (locatieCallback) {
         this.connect(null, function(db){
-            db.collection('locatie').list(function(err, result){
+            db.collection('locatie').find({}).toArray(function(err, result){
+                locatie = result;
                 db.close();
+                locatieCallback(locatie);
                 });
             });
         },
