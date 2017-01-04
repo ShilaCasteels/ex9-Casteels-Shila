@@ -37,9 +37,9 @@ var dalLocatie = {
         },
     updateLocatie: function (callback) {               //update = PUT
         this.connect(null, function(db){
-            db.collection('locatie').({id: id}
-        }, newloc, callback); 
-        }
+            db.collection('locatie').
+        };
+        };
 };
  
 module.exports = dalLocatie;
