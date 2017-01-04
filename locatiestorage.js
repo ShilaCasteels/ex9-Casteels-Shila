@@ -45,6 +45,13 @@ var dalLocatie = {
               });
           });
       },
+      createLocatie: function(id, create){
+          this.connect(null, function(db){
+              db.collection('locatie').insert(locatie, function(err, result){
+                  db.close();
+              });
+          });
+      },
    
     updateLocatie: function (id, update) {               //update = PUT
         this.connect(null, function(db){
