@@ -27,14 +27,19 @@ var dalLocatie = {
             });
         });
     },
-    insertLocatie:function(locatie, callback){
-        this.connect(null, function(db){
-            db.collection('locatie').insert(locatie, function(err, result){
-                db.close();
-                callback();
-            });
-        });
-    } 
-};
 
+    listAllLocations: function (callback) {
+        Locatie.find(callback);
+    },
+    findLocation: function (stad, callback) {
+        Locatie.find({stad: stad}, callback);
+    },
+    createLocation: function (locatie, callback) {                  //Create = POST
+        Locatie.create(locatie, callback);
+    },
+    updateLocation: function (id, newloc, callback) {               //update = PUT
+        Locatie.findOneAndUpdate({locatieid: id}, newloc, callback); 
+    }
+};
+ 
 module.exports = dalLocatie;
