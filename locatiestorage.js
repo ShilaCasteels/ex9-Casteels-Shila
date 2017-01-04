@@ -10,7 +10,7 @@ MongoClient.connect(url, function(error, db){
     console.log("Connected succesfully to server");
     db.close();
 });
-//met behulp van code van wibren en peter
+//met behulp van code van jeroen en yannick
 var dalLocatie = {
     connect: function (err, result) {
 		MongoClient.connect(url, function (error, db) {
@@ -31,28 +31,25 @@ var dalLocatie = {
     listAllLocaties: function (locatieCallback) {
         this.connect(null, function(db){
             db.collection('locatie').find({}).toArray(function(err, result){
-                locatie = result;
                 db.close();
-                locatieCallback(locatie);
+                locatieCallback(result);
                 });
             });
         },
         //met behulp van code Yannick
       findLocaties: function(locatieCallback, id){
           this.connect(null, function(db){
-              db.collection('locatie').find({_id:id}).toArray(function(err,doc){
-                  locatie = doc;
+              db.collection('locatie').find({_id:id}).toArray(function(err,result){
                   db.close();
-                  locatieCallback(locatie);
+                  locatieCallback(result);
               });
           });
       },
-      createLocatie: function(locatieCreatie){
+      createLocatie: function(locatie, locatieCreatie){
           this.connect(null, function(db){
               db.collection('locatie').insert(locatie, function(err, result){
-                  locatie = result;
                   db.close();
-                  locatieCreatie(locatie);
+                  locatieCreatie(result);
               });
           });
       },
