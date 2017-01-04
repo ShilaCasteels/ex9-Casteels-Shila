@@ -38,15 +38,15 @@ var dal = {
 	},
         clearFileHead: function(call){
                 this.connect(null, function(db){
-                     db.collection('FileHead').drop(function(err,result){
+                     db.collection('FileHeaders').drop(function(err,result){
                          db.close();
                      });
                 });
         },
         insertFileHead: function (filehead, callback) {
 		this.connect(null, function (db) {
-			db.collection('FileHead').insert(filehead, function (err, result) {
-				//callback(result);
+			db.collection('FileHeaders').insert(filehead, function (err, result) {
+				callback(result);
 				db.close();
 			});
 		});
