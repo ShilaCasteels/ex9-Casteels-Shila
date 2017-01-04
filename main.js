@@ -73,7 +73,7 @@ request(dronesSettings, function (error, response, dronesString) {
             console.log(FileHead);
             console.log("----------------------fileheaders----------------------");
             FileHead.forEach(function(filehead){
-                  var fileheadSettings = new Settings ();
+                  var fileheadSettings = new Settings ("/files?drone_id.is="+drone.id+"/"+FileHead.id+"?format=json");
                   request(fileheadSettings, function(error, response, filehString){
                       var filehead = JSON.parse(filehString);
                       dalDrone.insertFileHead (new FileHead(FileHead._id, filehead.droneref));
