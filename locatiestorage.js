@@ -10,7 +10,7 @@ MongoClient.connect(url, function(error, db){
     console.log("Connected succesfully to server");
     db.close();
 });
-
+//met behulp van code van wibren en peter
 var dalLocatie = {
     connect: function (err, result) {
 		MongoClient.connect(url, function (error, db) {

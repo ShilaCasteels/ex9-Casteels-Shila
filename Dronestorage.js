@@ -99,30 +99,3 @@ var dalDrone = {
 };
 
 module.exports = dalDrone;
-
-var dalLocatie = {
-    connect: function (err, result) {
-		MongoClient.connect(url, function (error, db) {
-			if (error)
-				throw new Error(error);
-			console.log("Connected successfully to server");
-			result(db);
-		});
-	},
-    clearLocatie: function(call){
-        this.connect(null, function(db){
-            db.collection('locatie').drop(function(err, result){
-                db.close();
-            });
-        });
-    },
-    insertLocatie:function(locatie, callback){
-        this.connect(null, function(db){
-            db.collection('locatie').insert(locatie, function(err, result){
-                db.close();
-            });
-        });
-    } 
-};
-
-module.exports = dalLocatie;
