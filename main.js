@@ -131,7 +131,7 @@ app.use(parser.json());
 var dalLocatie = require('./locatiestorage.js');
 var validate = require('./Validation.js');
 
-//Locatie: op basis van code peter en wibren
+//Locatie: op basis van code jeroen en yannikc
 var Locatie_M = function(id, migratie, pauze_id, pauze_tijd, bezetting, bezet, klas, aantal_studenten_klas, 
 aantal_geregistreerde_studenten){
     this.id = id;
@@ -145,7 +145,7 @@ aantal_geregistreerde_studenten){
     this.aantal_geregistreerde_studenten = aantal_geregistreerde_studenten;
 };
 
-app.get("/locatie",function(request, response){
+app.get("/locatie/:id",function(request, response){
     dalLocatie.listAllLocaties(function(err, locatie){
         if(err){
             throw err;
@@ -218,18 +218,18 @@ app.put("/locatie/:id", function (request, response) {
 
 var dalPauze = require('./pauzestorage.js');
 
-//Locatie: op basis van code peter en wibren
+//Locatie: op basis van code jeroen en yannick
 var Pauze_M = function(pauze_id, pauze_tijd){
     this.pauze_id = pauze_id;
     this.pauze_tijd = pauze_tijd;
 };
 
-app.get("/pauze",function(request, response){
-    dalPauze.listAllPauze(function(err, locatie){
+app.get("/pauze/pauze_id",function(request, response){
+    dalPauze.listAllPauze(function(err, pauze){
         if(err){
             throw err;
         }
-        response.send(locatie);
+        response.send(pauze);
     });
 });
 
@@ -239,7 +239,7 @@ app.post("/pauze", function (request, response) {
             request.body.pauze_tijd
     );
     
-    dalPauze.createPauze(Pauze, function(err, locatie){
+    dalPauze.createPauze(Pauze, function(err, pauze){
         var errors = validate.fieldsNotEmpty(
                 "pauze_id",
                 "pauze_tijd"
@@ -248,12 +248,12 @@ app.post("/pauze", function (request, response) {
                  response.status(400).send({msg: "Volgende velden ontbreken: "+errors.concat()});
                  return;
              }
-             response.send(locatie);
+             response.send(pauze);
              
             console.log("pauze toegevoegd");
         });
     });
-app.put("/pauze/:id", function (request, response) {
+app.put("/pauze/:pauze_id", function (request, response) {
     var Pauze = new Pauze_M(
             request.body.pauze_id,
             request.body.pauze_tijd
@@ -266,14 +266,74 @@ app.put("/pauze/:id", function (request, response) {
         response.status(400).send({msg: "Volgende velden ontbreken of zijn verkeerd ingevuld:" + error.concat()});
         return;
     }
-    dalPauze.updateLocatie(request.params.id, Pauze, function (err, locatie) {
+    dalPauze.updatePauze(request.params.id, Pauze, function (err, pauze) {
         if (err) {
             console.log(err);
         }
-        response.send(locatie);
+        response.send(pauze);
     });
     console.log("Pauze updated");
 });
 
+var dalKassa = require('./kassastorage.js');
+
+//Locatie: op basis van code peter en wibren
+var Kassa_M = function(kassa_id, kassa_locatie, kassa_rapport_id){
+    this.kassa_id = kassa_id;
+    this.kassa_locatie = kassa_locatie;
+    this.kassa_rapport_id = kassa_rapport_id;
+};
+
+app.get("/kassa/kassa_id",function(request, response){
+    dalKassa.listAllKassa(function(err, kassa){
+        if(err){
+            throw err;
+        }
+        response.send(kassa);
+    });
+});
+
+app.post("/kassa", function (request, response) {
+    var Kassa = new Kassa_M(
+            request.body.kassa_id,
+            request.body.kassa_locatie,
+            request.body.kassa_rapport_id
+    );
+    
+    dalKassa.createKassa(Kassa, function(err, kassa){
+        var errors = validate.fieldsNotEmpty(
+                "kassa_id",
+                "kassa_locatie"
+                );
+             if(errors){
+                 response.status(400).send({msg: "Volgende velden ontbreken: "+errors.concat()});
+                 return;
+             }
+             response.send(kassa);
+             
+            console.log("kassa toegevoegd");
+        });
+    });
+app.put("/kassa/kassa_id", function (request, response) {
+    var Kassa = new Kassa_M(
+            request.body.kassa_id,
+            request.body.kassa_locatie
+        );
+    var error = validate.fieldsNotEmpty(
+             "kassa_id",
+             "kassa_locatie"
+            );
+    if (error) {
+        response.status(400).send({msg: "Volgende velden ontbreken of zijn verkeerd ingevuld:" + error.concat()});
+        return;
+    }
+    dalKassa.updateKassa(request.params.kassa_id, Kassa, function (err, kassa) {
+        if (err) {
+            console.log(err);
+        }
+        response.send(kassa);
+    });
+    console.log("Kassa updated");
+});
 app.listen(8765);
 //console.log("Hello Shila!");
