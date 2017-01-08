@@ -39,7 +39,7 @@ var dalKassa = {
         //met behulp van code Yannick
       findKassa: function(kassaCallback, id){
           this.connect(null, function(db){
-              db.collection('pauze').find({kassa_id:id}).toArray(function(err,result){
+              db.collection('kassa').find({kassa_id:id}).toArray(function(err,result){
                   db.close();
                   kassaCallback(result);
               });
